@@ -1,5 +1,15 @@
 # vuejs-project
 
+## Clone project
+```
+git clone https://github.com/isambtb/vuejs-project.git
+```
+
+## Change dir to project
+```
+cd  vuejs-project
+```
+
 ## Project setup
 ```
 npm install
