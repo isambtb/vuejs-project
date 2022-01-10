@@ -26,7 +26,6 @@ import axios from "axios";
 import router from "@/router";
 
 interface IValue {
-  name: string | null;
   value: string;
 }
 
@@ -34,42 +33,16 @@ export default defineComponent({
   name: "AddValue",
   data(): IValue {
     return {
-      name: localStorage.getItem("name"),
       value: "",
     };
   },
 
   methods: {
-    async addvalue(): Promise<void> {
-      const payload = {
-        value: this.value,
-      };
-
-      const code = localStorage.getItem("code");
-      const name = localStorage.getItem("name");
-
-      try {
-        const response = await axios.post(
-          `https://hello.dhstaging.net/api/sys/v1.0/front_end_test/${name}/${code}/create_row`,
-          payload,
-          {
-            headers: {
-              "x-dhauth-token": "notsupersecret_but_stillakindofpwd",
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          this.$emit("reload-list", true);
-          this.value = "";
-        }
-      } catch (error: any) {
-        console.log(error.response.data.validation_error.details[0].message);
-        alert(error.response.data.validation_error.details[0].message);
-      }
+    addNewValue(): void {
+      this.$emit("add-new-value", this.value);
     },
 
-    async logout(): Promise<void> {
+    logout(): void {
       localStorage.clear();
       router.push("/");
     },
@@ -96,20 +69,18 @@ div.intro
   color: #333333
 
 input
-  width: 400px
-  height: 52px
-  display: flex
-  flex-direction: row
-  justify-content: flex-start
-  align-items: flex-start
-  gap: 10px
-  margin: 48px 199px 24px
-  padding: 14px 21px
-  object-fit: contain
-  border-radius: 10px
-  border: solid 1px #f2f2f2
-  background-color: #fff
-  font-size: 20px
+  width: 340px
+  height: 24px
+  flex-grow: 0
+  font-family: Poppins
+  font-size: 16px
+  font-weight: normal
+  font-stretch: normal
+  font-style: normal
+  line-height: normal
+  letter-spacing: normal
+  text-align: left
+  color: #4f4f4f
 
 button.add-value-btn
   width: 440px

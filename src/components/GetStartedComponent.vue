@@ -20,8 +20,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import axios from "axios";
-import router from "../router";
 
 interface IName {
   username: string;
@@ -36,31 +34,8 @@ export default defineComponent({
   },
 
   methods: {
-    async createUser(): Promise<void> {
-      const payload = {
-        name: this.username,
-      };
-
-      try {
-        const response = await axios.post(
-          "https://hello.dhstaging.net/api/sys/v1.0/front_end_test/create_test",
-          payload,
-          {
-            headers: {
-              "x-dhauth-token": "notsupersecret_but_stillakindofpwd",
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          localStorage.setItem("name", response.data.data.name);
-          localStorage.setItem("code", response.data.data.code);
-          router.push("add-value");
-        }
-      } catch (error: any) {
-        console.log(error.response.data.validation_error.details[0].message);
-        alert(error.response.data.validation_error.details[0].message);
-      }
+     createUser(): void {
+      this.$emit("create-new-user", this.username);
     },
   },
 });

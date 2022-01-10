@@ -1,18 +1,28 @@
 <template>
   <div class="get-started">
-    <GetStartedComponent />
+    <GetStartedComponent v-on:create-new-user="createUser"/>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import GetStartedComponent from "@/components/GetStartedComponent.vue"; // @ is an alias to /src
+import createUserService from "@/services/createUserService"
+import router from "@/router";
 
 export default defineComponent({
   name: "GetStarted",
   components: {
     GetStartedComponent,
   },
+  methods: {
+    async createUser(username: string): Promise<void> {
+      const data = await createUserService(username);
+      localStorage.setItem("name", data.name);
+      localStorage.setItem("code", data.code.toString());
+      router.push("add-value");
+    }
+  }
 });
 </script>
 

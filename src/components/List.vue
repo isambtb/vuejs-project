@@ -25,22 +25,18 @@
 import { defineComponent } from "vue";
 import moment from "moment";
 
-interface Value {
-  id: null;
-  value: string;
-  created: string;
-}
-
 export default defineComponent({
   name: "List",
   props: {
     items: Array,
   },
   methods: {
-    formatDate(value: string) {
+    formatDate(value?: string): string {
       if (value) {
-        return moment(String(value)).format("YYYY-MM-DD HH:mm");
+        return moment(value).format("YYYY-MM-DD HH:mm");
       }
+
+      return "----";
     },
   },
 });

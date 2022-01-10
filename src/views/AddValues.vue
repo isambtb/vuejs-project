@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="add-column">
-      <AddValue v-on:reload-list="shouldReload"/>
+      <AddValue v-on:add-new-value="createNewValue"/>
     </div>
     <div class="list-container">
       <List v-bind:items="values" />
@@ -14,7 +14,8 @@
 import { defineComponent } from "vue";
 import AddValue from "@/components/AddValue.vue";
 import List from "@/components/List.vue";
-import axios from "axios";
+import fetchValuesList from "@/services/fetchListService";
+import createValue from "@/services/addValueService";
 
 interface IList {
   values: any[];
@@ -32,40 +33,22 @@ export default defineComponent({
     };
   },
   methods: {
-    async shouldReload(reloadList: boolean) {
-      console.log(reloadList);
-      if (reloadList === true) {
-        await this.updateList();
-      }
+    async createNewValue(value: string): Promise<void> {
+      const code = localStorage.getItem("code") || "";
+      const name = localStorage.getItem("name") || "";
+
+      await createValue(name, code, { value })
     },
 
-    async updateList(): Promise<void> {
-      const code = localStorage.getItem("code");
-      const name = localStorage.getItem("name");
-
-      try {
-        const response = await axios.get(
-          `https://hello.dhstaging.net/api/sys/v1.0/front_end_test/${name}/${code}/get_rows`,
-          {
-            headers: {
-              "x-dhauth-token": "notsupersecret_but_stillakindofpwd",
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          console.log(response);
-          this.values = response.data.data;
-        }
-      } catch (error: any) {
-        console.log(error.response.data.validation_error.details[0].message);
-        alert(error.response.data.validation_error.details[0].message);
-      }
+    async updateList(name: string, code: string): Promise<void> {
+      this.values = await fetchValuesList(name, code);
     },
   },
 
-  mounted() {
-    this.updateList();
+  async mounted() {
+    const code = localStorage.getItem("code") || "";
+    const name = localStorage.getItem("name") || "";
+    await this.updateList(name, code);
   },
 });
 </script>
